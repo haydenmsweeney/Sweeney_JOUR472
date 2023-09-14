@@ -152,7 +152,7 @@ umd_courses |>
   arrange(desc(count_classes))
 ```
 
-Compared to the previous codeblock, what has changed and how did that affect the result? **Answer**
+Compared to the previous codeblock, what has changed and how did that affect the result? **Answer: This put the variable count_classes in descending order.**
 
 ### Task 11: Grouping by multiple columns
 
@@ -169,7 +169,7 @@ umd_courses |>
 
 Compared to the previous codeblock, how did the output change and what in the code changed it?
 
-**Answer**
+**Answer: It grouped the data by term and put the department variable in alphabetical order.**
 
 ### Task 12: Other summary functions
 
@@ -185,7 +185,7 @@ umd_courses |>
   arrange(desc(total_seats))
 ```
 
-Compared to the previous codeblock, what has changed and how did that affect the result? **Answer**
+Compared to the previous codeblock, what has changed and how did that affect the result? **Answer: Added a column for number of seats and sorted by descending order**
 
 ### Task 13: different kinds of summarizations
 
@@ -203,7 +203,7 @@ umd_courses |>
   arrange(desc(total_seats))
 ```
 
-Compared to the previous codeblock, what has changed and how did that affect the result? What do the top terms have in common? **Answer**
+Compared to the previous codeblock, what has changed and how did that affect the result? What do the top terms have in common? **Answer: It calculated the mean and median of the number of seats in each class in each term. I am not sure what the top terms have in common, but it appears that the mean number of seats per class is around the same.**
 
 ### Task 14: more aggregations
 
@@ -225,7 +225,7 @@ umd_courses |>
 
 Compared to the previous codeblock, what has changed and how did that affect the result? How is the data sorted?
 
-**Answer**
+**Answer: Now the data is being sorted by descending number of total seats. It is also being grouped by department rather than term.**
 
 ### Task 12: Questions
 
@@ -233,8 +233,8 @@ No code here; I want you to provide three questions that this data suggests to y
 
 **Answer**
 
-1.  
+1.  What is the average number of classes per department?
 
-2.  
+2.  What department has the most classes?
 
-3.  
+3.  What department has the least amount of classes?
