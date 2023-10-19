@@ -1,0 +1,64 @@
+---
+title: "reverse_engineering_project"
+author: "Hayden Sweeney"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+## Load libraries.
+
+Load the required libraries for analyzing the data.
+
+```{r}
+options(scipen = 999)
+library(tidyverse)
+library(janitor)
+library(readr)
+library(lubridate)
+```
+
+## Loading and cleaning data
+
+Load the data we will use for this analysis, and change the amount column from a character to a number.
+
+```{r}
+sports_owner_donations <- read_csv("sports-political-donations.csv") |>
+  mutate(Amount = str_replace_all(Amount,'\\$','')) |>
+  mutate(Amount = str_replace_all(Amount, '\\,','')) |>
+  mutate(Amount = as.numeric(Amount))
+```
+
+In this notebook, we are reverse engineering what we believe to be the five most important findings from this story.
+
+## Q1: "“American professional sports owners have contributed nearly $47 million in federal elections since 2015, according to research by ESPN in partnership with FiveThirtyEight, including $10 million to Republican causes and $1.9 million to Democratic causes so far in the 2020 election cycle.”
+
+## Find the total amount donated to Democrats in the 2020 election cycle.
+
+```{r}
+sports_owner_donations |>
+  filter(str_detect(Party, 'Democrat')) |>
+  filter(str_detect(Election Year, '2020')) |>
+  total_amount = sum(Amount) |>
+  arrange(desc(total_amount))
+```
+
+
+## Q2: "Of the 160 owners and commissioners in ESPN’s database, 74 contributed a majority of their publicly searchable funds to Republican campaigns, with 48 donating a majority to Democrats and the rest sending most of their money to causes that aren’t fully aligned with either party."
+
+## Who made the highest number of donations?
+Charles Johnson made the highest number of donations, with 213.
+
+```{r}
+sports_owner_donations |>
+  group_by(Owner) |>
+  summarise(total_donations = n()) |>
+  arrange(desc(total_donations))
+```
+
+
