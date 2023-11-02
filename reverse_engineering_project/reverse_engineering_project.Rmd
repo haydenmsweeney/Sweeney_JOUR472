@@ -1,5 +1,5 @@
 ---
-title: "reverse_engineering_project"
+title: "turorial"
 author: "Hayden Sweeney"
 output: html_document
 ---
@@ -31,29 +31,58 @@ Load the data we will use for this analysis, and change the amount column from a
 sports_owner_donations <- read_csv("sports-political-donations.csv") |>
   mutate(Amount = str_replace_all(Amount,'\\$','')) |>
   mutate(Amount = str_replace_all(Amount, '\\,','')) |>
-  mutate(Amount = as.numeric(Amount))
+  mutate(Amount = as.numeric(Amount)) |>
+  clean_names()
 ```
 
 In this notebook, we are reverse engineering what we believe to be the five most important findings from this story.
 
-```{r}
-
-```
-
-
-## Q1: "Of the 160 owners and commissioners in ESPN’s database, 74 contributed a majority of their publicly searchable funds to Republican campaigns, with 48 donating a majority to Democrats and the rest sending most of their money to causes that aren’t fully aligned with either party."
+## Q1: ""Of the 160 owners and commissioners in ESPN’s database, 74 contributed a majority of their publicly searchable funds to Republican campaigns, with 48 donating a majority to Democrats and the rest sending most of their money to causes that aren’t fully aligned with either party."
 
 ## Who made the highest number of donations?
-A1: Charles Johnson made the highest number of donations, with 213.
+
+Charles Johnson made the highest number of donations, with 213.
 
 ```{r}
 sports_owner_donations |>
-  group_by(Owner) |>
+  group_by(owner) |>
   summarise(total_donations = n()) |>
   arrange(desc(total_donations))
 ```
 
-## Q2: ""Drilling down deeper into the data, we can see that federal contributions in each league lean red, except for in the WNBA."
+
+## Q2: "“American professional sports owners have contributed nearly $47 million in federal elections since 2015, according to research by ESPN in partnership with FiveThirtyEight, including $10 million to Republican causes and $1.9 million to Democratic causes so far in the 2020 election cycle.” 
+
+## Find the total of all donations from all owners. 
+
+The total amount that all owners have donated since 2015 is $46,978,697. 
+
+```{r}
+sports_owner_donations |>
+  summarise(sum(amount))
+```
+
+## Find how much money owners donated to Republicans in the 2020 election cycle.
+
+Owners donated $10,111,284 to Republicans in the 2020 election cycle.
+
+```{r}
+sports_owner_donations |>
+  filter(str_detect(party, 'Republican')) |>
+  filter(election_year == 2020) |>
+  summarise(sum(amount))
+```
+## Find how much money owners donated to Democrats in the 2020 election cycle.
+
+Owners donated $1,877,133 to Democrats in the 2020 election cycle.
+
+```{r}
+sports_owner_donations |>
+  filter(str_detect(party, 'Democrat')) |>
+  filter(election_year == 2020) |>
+  summarise(sum(amount))
+```
+
 
 ## Which league made the most donations?
 A1: The MLB made the most donations, with 746.
@@ -75,5 +104,28 @@ sports_owner_donations |>
   group_by(`Election Year`) |>
   summarise(count_per_year = n()) |>
   arrange(desc(count_per_year))
+```
+
+## Visualizing Data
+
+```{r}
+league_donations <- sports_owner_donations |>
+  group_by(league) |>
+  summarise(total_donation = n()) |>
+  arrange(desc(total_donation))
+```
+
+```{r}
+league_donations |>
+  ggplot() +
+  geom_bar(aes(x=league, weight=total_donation)) +
+  labs(
+    title="Number of Donations by League",
+    x = "League",
+    y = "Number of donations",
+    caption = "source: ESPN and FiveThirtyEight"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45,  hjust=1))
 ```
 
