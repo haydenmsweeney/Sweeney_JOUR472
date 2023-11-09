@@ -74,8 +74,7 @@ calls_by_month |>
 
 Describe the pattern of results; you may want to look at the data to dig into particular outliers.
 
-**A2.** 
-
+**A2.** There's a spike in calls during the summer and the holidays. There is a massive decrease at the end but that's because the final week of the year was likely only a couple days rather than a full week.
 
 ```{r}
 calls_by_week <- pg_call |>
@@ -122,4 +121,13 @@ To answer this question, do the following:
 **A3.**  
 
 ```{r}
+calls_by_zip <- pg_call |>
+  group_by(zipcode) |>
+  summarise(count=n()) |>
+  mutate(pct_total_calls = count/1397*100)
 ```
+
+```{r}
+calls_by_zip_with_income <- calls_by_zip |> left_join(census_api_key("830688142e6cbfa41054e8273fa8e30c8956b099"))
+```
+
