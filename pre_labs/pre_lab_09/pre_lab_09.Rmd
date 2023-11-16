@@ -138,7 +138,7 @@ knitr::include_graphics("images/datawrapper8.png")
 
 You'll see that the map currently is of the whole nation, and we only have Maryland data. Let's fix that.
 
-**Task** Look for "Hide regions without data" under Appearance, and click the slider icon to enable that feature. You should see a map zoomed into Maryland with some counties in various colors. **Answer** Describe the changes from the previous map
+**Task** Look for "Hide regions without data" under Appearance, and click the slider icon to enable that feature. You should see a map zoomed into Maryland with some counties in various colors. **Answer** Describe the changes from the previous map: The map is only Maryland and only includes counties that actually have data.
 
 But it's a little rough visually, so let's clean that up.
 
