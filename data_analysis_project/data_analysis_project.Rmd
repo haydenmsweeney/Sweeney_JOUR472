@@ -26,3 +26,5 @@ wbb_rosters_2023_24 <- read_csv("data/wbb_rosters_2023_24.csv")
 ```
 
 Our dataset has already been cleaned. There are columns with cleaned versions of all variables, including year, hometown, state, etc.
+
+One limitation is that the Github where we downloaded our dataset from only includes roster data since 2020. As far as roster data, we have everything we need, but the dataset does not include numbers such as player statistics or team records. This is not an issue we are able to solve due to the problem of finding the data for every single player on every team including D2 and D3 teams. It looks like we will be able to answer all of the questions we created.
