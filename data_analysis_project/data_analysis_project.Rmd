@@ -1,0 +1,28 @@
+---
+title: "Data Analysis Project"
+author: "Hayden Sweeney"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load libraries
+
+```{r}
+options(scipen = 999)
+library(tidyverse)
+library(janitor)
+library(readr)
+library(lubridate)
+```
+
+## Loading data
+
+```{r}
+wbb_rosters_2023_24 <- read_csv("data/wbb_rosters_2023_24.csv")
+
+```
+
+Our dataset has already been cleaned. There are columns with cleaned versions of all variables, including year, hometown, state, etc.
