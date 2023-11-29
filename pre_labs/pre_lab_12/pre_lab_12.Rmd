@@ -198,7 +198,7 @@ Then we can create top 10 lists for both of them and compare:
 
 ### Task 11: Create dataframes with the top 10 words in each year
 
-**Task** Run the following code and describe the results. **Answer**
+**Task** Run the following code and describe the results. **Answer** It creates tables that show the top 10 most commonly used words in 2021, 2022, and 2023.
 
 ```{r}
 unique_words_2021 |>
@@ -309,7 +309,7 @@ Another popular use of text analysis is to measure the sentiment of a word - whe
 
 ### Task 15: Load the bing lexicon and produce sentiments for our 2021-2023 unique words
 
-**Task** Run the following code and describe the results. Do any of the sentiments seem incorrect or counter-intuitive? **Answer** 
+**Task** Run the following code and describe the results. Do any of the sentiments seem incorrect or counter-intuitive? **Answer** I don't think any of the sentiments seem incorrect but some of them are ambigious and are listed as "positive" or "negative" when they could be either depending on the context.
 
 ```{r}
 bing <- get_sentiments("bing")
