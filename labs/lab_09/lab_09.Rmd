@@ -51,11 +51,12 @@ combined_data <- inner_join(md_gov_county, md_gov_county_18, by = "County")
 combined_data |>
   clean_names() |>
   mutate(pct_cox = cox/(cox + moore + lashar + wallace + harding + sefcik + write_ins_x)*100) |>
-  mutate(pct_hogan = hogan/(hogan + jealous + quinn + schlakman + write_ins_y)*100)
+  mutate(pct_hogan = hogan/(hogan + jealous + quinn + schlakman + write_ins_y)*100) |>
+  mutate(cox_hogan_diff = pct_cox - pct_hogan)
 ```
 
 ```{r}
-write_csv(combined_data, "data/combined_data")
+write_csv(combined_data, "data/combined_data.csv")
 
 ```
 
@@ -66,8 +67,19 @@ HINT: In Datawrapper's "Check and Describe" tab, you can click on a column to ge
 What do you think the story here is? Put the answer below along with the URL of your chart.
 
 **A2.** 
+Chart: <iframe title="Vote types in Maryland" aria-label="Interactive line chart" id="datawrapper-chart-QYvRy" src="https://datawrapper.dwcdn.net/QYvRy/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="400" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();</script>
 
+The story here is that the use of mail-in ballots by Maryland voters increased dramatically in 2020 as a result of the COVID-19 pandemic. A lot of people went back to in-person voting in 2022, but mail-in vote levels were still nearly three times as high as they were before the pandemic.
 ```{r}
+md_votes_by_type <- read_csv("data/md_votes_by_type.csv")
+
+md_votes_by_type_with_pct <- md_votes_by_type |>
+  clean_names() |>
+  mutate(pct_early = (early/total)*100) |>
+  mutate(pct_election_day = (election_day/total)*100) |>
+  mutate(pct_mail = (mail/total)*100)
+
+write_csv(md_votes_by_type_with_pct, "data/md_votes_by_type_with_pct.csv")
 ```
 
 
@@ -84,6 +96,16 @@ What do you think the story here is? Put the answer below along with the URL of 
 What do you think the story here is, and what would you want to know more about? Put the answer below along with the URL of your map.
 
 **A3.** 
+<iframe title="Overdose Calls by ZIP Code in Montgomery County in 2022" aria-label="Map" id="datawrapper-chart-DtwyA" src="https://datawrapper.dwcdn.net/DtwyA/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="675" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r=0;r<e.length;r++)if(e[r].contentWindow===a.source){var i=a.data["datawrapper-height"][t]+"px";e[r].style.height=i}}}))}();</script>
 
+There are more overdose calls in the center of the county. I would like to see per capita data because I assume these are more highly populated areas. If not, I want to learn why there are so many overdose calls in those zip codes.
 ```{r}
+montgomery_2022_overdoses <- read_csv("data/montgomery_2022_overdoses.csv")
+
+montgomery_2022_overdoses <- montgomery_2022_overdoses |>
+  group_by(zip) |>
+  summarise(count=n()) |>
+  mutate(pct_of_total = (count/sum(count))*100)
+
+write_csv(montgomery_2022_overdoses, "data/montgomery_2022_overdoses.csv")
 ```
