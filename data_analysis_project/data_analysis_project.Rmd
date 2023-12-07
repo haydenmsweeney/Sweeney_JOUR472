@@ -21,10 +21,51 @@ library(lubridate)
 ## Loading data
 
 ```{r}
-wbb_rosters_2023_24 <- read_csv("data/wbb_rosters_2023_24.csv")
+roster_2023_24 <- read_csv("data/wbb_rosters_2023_24.csv")
+roster_2022_23 <- read_csv("data/wbb_rosters_2022_23.csv")
+roster_2021_22 <- read_csv("data/wbb_rosters_2021_22.csv")
+roster_2020_21 <- read_csv("data/wbb_rosters_2020_21.csv")
 
 ```
 
 Our dataset has already been cleaned. There are columns with cleaned versions of all variables, including year, hometown, state, etc.
 
 One limitation is that the Github where we downloaded our dataset from only includes roster data since 2020. As far as roster data, we have everything we need, but the dataset does not include numbers such as player statistics or team records. This is not an issue we are able to solve due to the problem of finding the data for every single player on every team including D2 and D3 teams. It looks like we will be able to answer all of the questions we created.
+
+```{r}
+players_by_state_2020_21 <- roster_2020_21 |>
+  group_by(state_clean) |>
+  summarise(
+    count_2020_21 = n()
+  ) |>
+  filter(state_clean != "NA")
+
+players_by_state_2021_22 <- roster_2021_22 |>
+  group_by(state_clean) |>
+  summarise(
+    count_2021_22 = n()
+  ) |>
+  filter(state_clean != "NA")
+
+players_by_state_2022_23 <- roster_2022_23 |>
+  group_by(state_clean) |>
+  summarise(
+    count_2022_23 = n()
+  ) |>
+  filter(state_clean != "NA")
+
+players_by_state_2023_24 <- roster_2023_24 |>
+  group_by(state_clean) |>
+  summarise(
+    count_2023_24 = n()
+  ) |>
+  filter(state_clean != "NA")
+
+players_change_over_time <- players_by_state_2020_21 |>
+  left_join(players_by_state_2021_22, by = "state_clean") |>
+  left_join(players_by_state_2022_23, by = "state_clean") |>
+  left_join(players_by_state_2023_24, by = "state_clean") |>
+  mutate(total_players = count_2020_21 + count_2021_22 + count_2022_23 + count_2023_24) |>
+  mutate(percentage_change = (count_2023_24 - count_2020_21)/count_2020_21*100) |>
+           arrange(desc(total_players))
+```
