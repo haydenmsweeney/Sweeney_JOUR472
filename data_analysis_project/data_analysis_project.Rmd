@@ -8,6 +8,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+\*\* Deliverable 3 summary: So far, we have done analysis on the states that produce the most women's basketball players and the power 5 conference teams with the tallest teams for the current season. We found that Pennsylvania, Texas, and New York are the three states leading in terms of the number of players they produce. While Pennsylvania is not in the top slot for all four years we looked at, it is the state with the largest total overall and has a very low percent change between 2020 and 2023. Guam and the Virgin Islands have the lowest counts, which is not surprising considering these are small territories. In terms of our question on average height, the top five power 5 conference teams for this year are Texas, UCLA, Indiana, South Carolina, and Michigan.
+
+Our most newsworthy finding so far is that many of the leaders in terms of average height are also at the top of the list for most rebounds per game, as we found here: <https://www.ncaa.com/stats/basketball-women/d1/current/team/1015>. South Carolina is currently number one, and UCLA and Texas are both in the top 20. While all 64 teams within the five conferences had average heights that were between the small margin of 69 and 74 inches, this does suggest that even a few inches may make a big difference in this regard. We will continue to explore this more and also consider other team statistics that can be found on the NCAA's website.
+
 ## Load libraries
 
 ```{r}
@@ -31,6 +35,10 @@ roster_2020_21 <- read_csv("data/wbb_rosters_2020_21.csv")
 Our dataset has already been cleaned. There are columns with cleaned versions of all variables, including year, hometown, state, etc.
 
 One limitation is that the Github where we downloaded our dataset from only includes roster data since 2020. As far as roster data, we have everything we need, but the dataset does not include numbers such as player statistics or team records. This is not an issue we are able to solve due to the problem of finding the data for every single player on every team including D2 and D3 teams. It looks like we will be able to answer all of the questions we created.
+
+## Q1: Which states produce the most D1 women's basketball players?
+
+We are dealing with datasets over several seasons, so we need to combine them. First, we calculated the number of players from each state from each of the last four seasons, and then combined all the datasets and created a new variable to see how it has changed over time.
 
 ```{r}
 players_by_state_2020_21 <- roster_2020_21 |>
@@ -69,3 +77,21 @@ players_change_over_time <- players_by_state_2020_21 |>
   mutate(percentage_change = (count_2023_24 - count_2020_21)/count_2020_21*100) |>
            arrange(desc(total_players))
 ```
+
+A1: Pennsylvania and Texas are the states that produced the most D1 womens basketball players in the last four years. There has been an increase in international players as well, including from the Virgin Islands and Puerto Rico.
+
+## Q2: What are the tallest teams in D1 power conferences?
+
+```{r}
+roster_2023_24 |>
+  filter(conference == 'Pac-12' | conference == 'SEC' | conference == 'Big 12' | conference == 'ACC' | conference == 'Big Ten') |>
+  group_by(team) |>
+  summarise(
+    total_players = n(),
+    total_height = sum(total_inches),
+    mean_total_inches = total_height/total_players
+  ) |>
+  arrange(desc(mean_total_inches))
+```
+
+A2: The tallest teams in D1 are Texas, UCLA, and Indiana. All of these teams' average height is over 6-foot-1.
