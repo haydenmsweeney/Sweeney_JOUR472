@@ -94,4 +94,80 @@ roster_2023_24 |>
   arrange(desc(mean_total_inches))
 ```
 
-A2: The tallest teams in D1 are Texas, UCLA, and Indiana. All of these teams' average height is over 6-foot-1.
+A2: The tallest teams in D1 this season are Texas, UCLA, and Indiana. All of these teams' average height is over 6-foot-1, and all of these teams were ranked in the preseason AP Top 25 poll. This could suggest that taller teams tend to have more success.
+
+##Q3: What is the breakdown of freshmen, sophomores, juniors, and seniors on each team? What percentage of the team do redshirts make up?
+
+```{r}
+#group the dataframe by team and get a count of each year
+years_2023 <- roster_2023_24 |>
+  select(team, year_clean) |>
+  group_by(team, year_clean) |>
+  count()
+
+years_2023 <- years_2023 |>
+  pivot_wider(names_from = year_clean, values_from = n)
+
+years_2023[is.na(years_2023)] <- 0
+
+#add a column for redshirts
+redshirts <- roster_2023_24 |>
+  select(team, redshirt) |>
+  filter(redshirt == 1) |>
+  group_by(team) |>
+  summarise(redshirts = n())
+
+years_2023 <- years_2023 |>
+  left_join(redshirts, by="team") |>
+  clean_names()
+
+#mutate a total column as well as percent columns
+years_2023 <- years_2023 |>
+  mutate(total = freshman + graduate_student + junior + senior + sophomore + fifth_year + na + sixth_year) |>
+  mutate(pct_redshirts = (redshirts/total)*100) |>
+  arrange(desc(pct_redshirts))
+```
+
+A3: Looking at the table we created, Grand Valley State and North Carolina Central have the highest percentage of redshirt players on their roster this season with 64.3 percent. There are 86 teams with zero seniors, including Maryland. If you sort the dataset by total players, you'll notice that many of the non-division I teams have much larger rosters. Perhaps the rules pertaining roster sizes are more lenient in Division II and III.
+
+##Q4: Which school took in the most transfers? Which school had the most players transfer out?
+
+```{r}
+#filter for only the players with something in the previous_school column
+all_transfers_2023 <- roster_2023_24 |>
+  filter(!is.na(previous_school_clean))
+
+#create two different dataframes: one grouped by team and one grouped by previous_school
+current_team_transfers_grouped <- all_transfers_2023 |>
+  group_by(team) |>
+  summarise(transferred_in = n())
+
+previous_school_transfers_grouped <- all_transfers_2023 |>
+  group_by(previous_school_clean) |>
+  summarise(transferred_out = n()) |>
+  rename("team" = previous_school_clean)
+
+#combine the two dataframes
+combined_transfers_2023 <- full_join(current_team_transfers_grouped, previous_school_transfers_grouped, by = "team")
+
+combined_transfers_2023[is.na(combined_transfers_2023)] <- 0
+```
+
+A4: Oregon, Blinn College, and Trinity Valley CC all had 9 players transfer out. Interestingly, none of these teams had coaching changes over the offseason, which makes us question what the reason was for so many players leaving. Old Dominion and Glenville State took in the most transfers with 14.
+
+## Q5: Which power five teams have the most in-state players?
+
+```{r}
+#create a dataset to only show in-state players
+in_state <- roster_2023_24 |>
+  filter(team_state == state_clean) 
+
+#filter to only show data from power five conference schools
+in_state |>
+  filter(conference == 'Pac-12' | conference == 'SEC' | conference == 'Big 12' | conference == 'ACC' | conference == 'Big Ten') |>
+  group_by(team) |>
+  summarise(count=n()) |>
+  arrange(desc(count))
+  
+```
+A5: Texas has the most in-state players on this year's roster with 9. TCU and Texas Tech are also on the first page of results with 7 in-state players. The state of Texas produces a lot of D1 women's basketball players, as we learned from a previous question, and it appears that a lot of that talent stays home. 
